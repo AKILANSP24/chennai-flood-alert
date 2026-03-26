@@ -1,0 +1,5 @@
+requests
+beautifulsoup4
+confluent-kafka
+python-dotenv
+schedule

@@ -1,0 +1,23 @@
+{
+  "type": "FeatureCollection",
+  "features": [
+    {
+      "type": "Feature",
+      "properties": {
+        "name": "Velachery Vulnerable Zone"
+      },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [80.2030, 12.9800],
+            [80.2250, 12.9800],
+            [80.2250, 12.9900],
+            [80.2030, 12.9900],
+            [80.2030, 12.9800]
+          ]
+        ]
+      }
+    }
+  ]
+}

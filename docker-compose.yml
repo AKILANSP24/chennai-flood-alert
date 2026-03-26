@@ -1,0 +1,100 @@
+services:
+  kafka:
+    image: apache/kafka:3.7.0
+    container_name: kafka
+    ports:
+      - "9092:9092"
+    environment:
+      KAFKA_NODE_ID: 1
+      KAFKA_PROCESS_ROLES: broker,controller
+      KAFKA_LISTENERS: PLAINTEXT://:9092,CONTROLLER://:9093
+      KAFKA_ADVERTISED_LISTENERS: PLAINTEXT://kafka:9092
+      KAFKA_CONTROLLER_LISTENER_NAMES: CONTROLLER
+      KAFKA_LISTENER_SECURITY_PROTOCOL_MAP: CONTROLLER:PLAINTEXT,PLAINTEXT:PLAINTEXT
+      KAFKA_CONTROLLER_QUORUM_VOTERS: 1@localhost:9093
+      # Note: simplified KRaft mode config for development purposes
+      KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR: 1
+      KAFKA_TRANSACTION_STATE_LOG_REPLICATION_FACTOR: 1
+      KAFKA_TRANSACTION_STATE_LOG_MIN_ISR: 1
+      KAFKA_GROUP_INITIAL_REBALANCE_DELAY_MS: 0
+
+  ollama:
+    image: ollama/ollama
+    container_name: ollama
+    ports:
+      - "11434:11434"
+    volumes:
+      - ollama_data:/root/.ollama
+
+  redis:
+    image: redis:7-alpine
+    container_name: redis
+    ports:
+      - "6379:6379"
+
+  telegram-bot:
+    build: ./services/telegram-bot
+    container_name: telegram-bot
+    depends_on:
+      - kafka
+    env_file: .env
+    dns:
+      - 8.8.8.8
+      - 8.8.4.4
+
+  weather-ingestor:
+    build: ./services/weather-ingestor
+    container_name: weather-ingestor
+    depends_on:
+      - kafka
+    env_file: .env
+
+  reservoir-scraper:
+    build: ./services/reservoir-scraper
+    container_name: reservoir-scraper
+    depends_on:
+      - kafka
+    env_file: .env
+
+  nlp-service:
+    build: ./services/nlp-service
+    container_name: nlp-service
+    ports:
+      - "8000:8000"
+    env_file: .env
+    depends_on:
+      - kafka
+      - ollama
+
+  decision-engine:
+    build: ./services/decision-engine
+    container_name: decision-engine
+    depends_on:
+      - kafka
+      - redis
+    env_file: .env
+    volumes:
+      - ./data:/data
+
+  dashboard:
+    build: ./services/dashboard
+    container_name: dashboard
+    ports:
+      - "8081:8081"
+    depends_on:
+      - kafka
+
+  r-analysis:
+    image: rocker/tidyverse:4.3
+    container_name: r-analysis
+    volumes:
+      - ./data:/data
+      - ./r-analysis:/r-analysis
+    command: >
+      Rscript -e "install.packages(c('leaflet','htmlwidgets'), repos='https://cran.r-project.org')" && Rscript /r-analysis/flood_report.R
+    depends_on:
+      - decision-engine
+    restart: "no"
+
+volumes:
+  ollama_data:

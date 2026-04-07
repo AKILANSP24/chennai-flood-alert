@@ -34,6 +34,35 @@ def normalize_tanglish(text: str) -> str:
         normalized.append(lexicon.get(lower_w, w))
     return " ".join(normalized)
 
+def get_nearest_zone(lat: float, lon: float) -> str:
+    """Map GPS coordinates to nearest Chennai flood zone."""
+    zones = [
+        ("Velachery", 12.9815, 80.2180),
+        ("Tambaram", 12.9249, 80.1000),
+        ("Adyar", 13.0067, 80.2510),
+        ("Saidapet", 13.0201, 80.2201),
+        ("Mudichur", 12.9100, 80.0700),
+        ("Porur", 13.0359, 80.1560),
+        ("Perambur", 13.1167, 80.2334),
+        ("T Nagar", 13.0418, 80.2341),
+        ("Anna Nagar", 13.0850, 80.2101),
+        ("Chrompet", 12.9516, 80.1462),
+        ("Neelankari", 12.8434, 80.1561),
+        ("Tambaram", 12.9249, 80.1000),
+    ]
+    
+    # Find nearest zone using simple distance calculation
+    nearest = "Chennai"
+    min_dist = float("inf")
+    
+    for zone_name, zone_lat, zone_lon in zones:
+        dist = ((lat - zone_lat) ** 2 + (lon - zone_lon) ** 2) ** 0.5
+        if dist < min_dist:
+            min_dist = dist
+            nearest = zone_name
+    
+    return f"{nearest} (GPS verified)"
+
 def process_message(msg_value):
     try:
         data = json.loads(msg_value)
@@ -62,6 +91,16 @@ def process_message(msg_value):
         data["nlp_location_desc"] = extracted.get("location_desc")
         
         # 5. Egress normalized & enriched document payload back to Kafka
+        
+        # If location is just coordinates, make it readable
+        location = data.get("nlp_location_desc") or ""
+        if "coordinates" in location.lower() or "gps" in location.lower():
+            lat = data.get("lat")
+            lon = data.get("lon")
+            if lat and lon:
+                # Map coordinates to nearest known Chennai zone
+                data["nlp_location_desc"] = get_nearest_zone(float(lat), float(lon))
+
         producer.produce("risk-scores", value=json.dumps(data).encode('utf-8'))
         producer.poll(0)
         
@@ -75,7 +114,7 @@ async def kafka_consumer_loop():
         'auto.offset.reset': 'latest'
     })
     # Subscribed to citizen-raw reports relayed implicitly by the PySpark logic upstream
-    consumer.subscribe(['nlp-results'])
+    consumer.subscribe(['citizen-raw'])
     
     logger.info("Started FastAPI backend listener on Kafka 'nlp-results'...")
     try:

@@ -1,0 +1,368 @@
+<!DOCTYPE html>
+
+<html class="dark"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&amp;family=Inter:wght@300;400;500;600&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    "colors": {
+                        "on-primary-fixed": "#003041",
+                        "error-dim": "#d7383b",
+                        "surface-dim": "#060e20",
+                        "error": "#ff716c",
+                        "inverse-primary": "#006787",
+                        "surface-container-low": "#091328",
+                        "surface-tint": "#7bd1fa",
+                        "surface-container-highest": "#192540",
+                        "on-tertiary-fixed": "#2e0e00",
+                        "secondary-fixed-dim": "#ffafa9",
+                        "on-primary": "#00465d",
+                        "surface-container": "#0f1930",
+                        "secondary-fixed": "#ffc3be",
+                        "error-container": "#9f0519",
+                        "on-error": "#490006",
+                        "surface-bright": "#1f2b49",
+                        "primary-container": "#51aad2",
+                        "on-surface": "#dee5ff",
+                        "primary": "#7bd1fa",
+                        "on-primary-container": "#002635",
+                        "background": "#060e20",
+                        "tertiary-dim": "#fd761a",
+                        "primary-fixed": "#7bd1fa",
+                        "on-secondary-fixed": "#70000c",
+                        "secondary-dim": "#ff716a",
+                        "secondary": "#ff716a",
+                        "on-secondary-container": "#ffdbd8",
+                        "outline-variant": "#40485d",
+                        "on-surface-variant": "#a3aac4",
+                        "on-tertiary-fixed-variant": "#632800",
+                        "surface-variant": "#192540",
+                        "on-tertiary-container": "#321000",
+                        "primary-dim": "#6cc3eb",
+                        "inverse-surface": "#faf8ff",
+                        "surface-container-lowest": "#000000",
+                        "outline": "#6d758c",
+                        "on-secondary-fixed-variant": "#a50318",
+                        "surface-container-high": "#141f38",
+                        "tertiary-container": "#f77113",
+                        "surface": "#060e20",
+                        "on-secondary": "#490005",
+                        "on-primary-fixed-variant": "#004f69",
+                        "on-error-container": "#ffa8a3",
+                        "primary-fixed-dim": "#6cc3eb",
+                        "on-tertiary": "#471a00",
+                        "tertiary-fixed-dim": "#ff7f2f",
+                        "secondary-container": "#a80619",
+                        "on-background": "#dee5ff",
+                        "inverse-on-surface": "#4d556b",
+                        "tertiary-fixed": "#ff955a",
+                        "tertiary": "#ff8439"
+                    },
+                    "borderRadius": {
+                        "DEFAULT": "1rem",
+                        "lg": "2rem",
+                        "xl": "3rem",
+                        "full": "9999px"
+                    },
+                    "fontFamily": {
+                        "headline": ["Plus Jakarta Sans"],
+                        "body": ["Inter"],
+                        "label": ["Inter"]
+                    }
+                },
+            },
+        }
+    </script>
+<style>
+        .glass-panel {
+            background: rgba(6, 14, 32, 0.6);
+            backdrop-filter: blur(24px);
+        }
+        .grid-bg {
+            background-image: linear-gradient(to right, rgba(64, 72, 93, 0.05) 1px, transparent 1px),
+                              linear-gradient(to bottom, rgba(64, 72, 93, 0.05) 1px, transparent 1px);
+            background-size: 40px 40px;
+        }
+        .map-marker {
+            transform: translate(-50%, -50%);
+        }
+        .animate-pulse-subtle {
+            animation: pulse 3s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+        }
+        @keyframes pulse {
+            0%, 100% { opacity: 1; transform: scale(1); }
+            50% { opacity: 0.7; transform: scale(1.1); }
+        }
+    </style>
+</head>
+<body class="bg-surface font-body text-on-surface overflow-hidden">
+<!-- Top Navigation Bar -->
+<header class="fixed top-0 w-full z-50 flex justify-between items-center px-6 py-3 bg-[#060e20]/60 backdrop-blur-xl shadow-[0_48px_48px_rgba(0,0,0,0.08)]">
+<div class="flex items-center gap-4">
+<h1 class="text-xl font-bold tracking-tighter text-[#7bd1fa] font-headline">FloodAlert Chennai</h1>
+</div>
+<nav class="hidden md:flex items-center gap-8 font-headline text-sm tracking-tight">
+<a class="text-[#7bd1fa] border-b-2 border-[#7bd1fa] pb-1 transition-colors duration-300" href="#">Live Map</a>
+<a class="text-slate-400 hover:text-[#7bd1fa] transition-colors duration-300" href="#">Shelters</a>
+<a class="text-slate-400 hover:text-[#7bd1fa] transition-colors duration-300" href="#">Resources</a>
+</nav>
+<div class="flex items-center gap-4">
+<span class="material-symbols-outlined text-slate-400 hover:text-[#7bd1fa] cursor-pointer active:scale-95 transition-transform" data-icon="notifications">notifications</span>
+<span class="material-symbols-outlined text-slate-400 hover:text-[#7bd1fa] cursor-pointer active:scale-95 transition-transform" data-icon="settings">settings</span>
+<div class="w-8 h-8 rounded-full bg-surface-container-highest flex items-center justify-center border border-outline-variant/15 overflow-hidden">
+<img alt="User Profile" class="w-full h-full object-cover" data-alt="Close up of a professional user profile avatar for a tech dashboard" src="https://lh3.googleusercontent.com/aida-public/AB6AXuABAZB_EAjnV8QzosFvasUamGbfv78em4xs5upGh0QDx_TvUuNoUqkxNNL_wCZ6THkOxgTL9QjlKo7sUbqXtj2MuGbhEV3Dpf_TTj0XesZ-6klaLtytvh23W5ry2XvavaTUhlczs4JI3kwioxsEBQaD02tE8u9G_HzzOhKPvchUFN1w6qZ3rXsU2bhPFxwSyEuwx77gfYP9p9G02JB55-CiypPh50z0nR7yQF3kkM2m91pgGFZkYbWSHMNW4Ucqnkx2Tk3Yxc4JFHGz"/>
+</div>
+</div>
+</header>
+<!-- Side Navigation Bar -->
+<aside class="fixed left-0 top-0 h-screen w-64 z-40 flex flex-col p-4 bg-[#060e20] pt-24 rounded-r-xl">
+<div class="mb-8 px-4">
+<h2 class="text-lg font-black text-[#7bd1fa] font-headline uppercase tracking-widest">Command Center</h2>
+<p class="text-xs text-slate-500 font-label">Zone: Chennai Metro</p>
+</div>
+<div class="flex flex-col gap-2 flex-grow">
+<a class="text-slate-400 px-4 py-2 flex items-center gap-3 hover:bg-[#7bd1fa]/10 hover:text-[#7bd1fa] rounded-full transition-all" href="#">
+<span class="material-symbols-outlined" data-icon="emergency">emergency</span>
+<span class="font-headline font-medium">Emergency Feed</span>
+</a>
+<a class="bg-[#7bd1fa] text-[#060e20] rounded-full px-4 py-2 flex items-center gap-3 active:scale-95 transition-transform" href="#">
+<span class="material-symbols-outlined" data-icon="tsunami">tsunami</span>
+<span class="font-headline font-medium">Risk Zones</span>
+</a>
+<a class="text-slate-400 px-4 py-2 flex items-center gap-3 hover:bg-[#7bd1fa]/10 hover:text-[#7bd1fa] rounded-full transition-all" href="#">
+<span class="material-symbols-outlined" data-icon="groups">groups</span>
+<span class="font-headline font-medium">Rescue Teams</span>
+</a>
+<a class="text-slate-400 px-4 py-2 flex items-center gap-3 hover:bg-[#7bd1fa]/10 hover:text-[#7bd1fa] rounded-full transition-all" href="#">
+<span class="material-symbols-outlined" data-icon="water_drop">water_drop</span>
+<span class="font-headline font-medium">Hydrology Data</span>
+</a>
+<a class="text-slate-400 px-4 py-2 flex items-center gap-3 hover:bg-[#7bd1fa]/10 hover:text-[#7bd1fa] rounded-full transition-all" href="#">
+<span class="material-symbols-outlined" data-icon="tune">tune</span>
+<span class="font-headline font-medium">Settings</span>
+</a>
+</div>
+<div class="mt-auto flex flex-col gap-2 border-t border-outline-variant/10 pt-4">
+<button class="bg-gradient-to-r from-secondary to-tertiary text-on-secondary font-bold py-3 px-6 rounded-full mb-4 active:scale-95 transition-transform flex items-center justify-center gap-2">
+<span class="material-symbols-outlined" data-icon="report">report</span>
+                Report Flood
+            </button>
+<a class="text-slate-400 px-4 py-2 flex items-center gap-3 hover:bg-[#7bd1fa]/10 hover:text-[#7bd1fa] rounded-full transition-all" href="#">
+<span class="material-symbols-outlined" data-icon="help">help</span>
+<span class="font-label">Support</span>
+</a>
+<a class="text-slate-400 px-4 py-2 flex items-center gap-3 hover:bg-[#7bd1fa]/10 hover:text-[#7bd1fa] rounded-full transition-all" href="#">
+<span class="material-symbols-outlined" data-icon="logout">logout</span>
+<span class="font-label">Logout</span>
+</a>
+</div>
+</aside>
+<!-- Main Content: Full Screen Map -->
+<main class="ml-64 pt-16 h-screen relative bg-surface-container-low grid-bg">
+<!-- Interactive Map Background Simulation -->
+<div class="absolute inset-0 z-0">
+<div class="w-full h-full grayscale-[0.8] brightness-[0.4] contrast-[1.2]" data-alt="High-contrast dark mode satellite map of a coastal city with intricate street patterns and water bodies" style="background-image: url('https://lh3.googleusercontent.com/aida-public/AB6AXuBOTGtKf69-I0pNpKF-xlgZapOJWrw7heOsweynCJUqset8NkpMaTRu_xGvpagGiDvBfpJ4-56ahaehAXQmfFZ-8IFK2YGFD4VvxzBCyW8xTajPiXptmcs94LwtTT5Tlzl0jDF2Z0TUvvsydApFn0kt1In46yB05IIV3AkQhgVVrSYOAW3Nfw-QQamGXGt2TL7pol32eKnKdCkiATXo3KkN3pb0JyFQ4gwi5c7Komux-9HXhM77z-ekxt0np-ge01tunzF5TaD2OPbA'); background-size: cover; background-position: center;"></div>
+<!-- Map Markers -->
+<!-- Critical: Velachery -->
+<div class="absolute top-[45%] left-[55%] z-10">
+<div class="relative group cursor-pointer">
+<div class="absolute -inset-4 bg-error/20 rounded-full animate-pulse-subtle"></div>
+<div class="relative w-8 h-8 bg-error text-on-error flex items-center justify-center rounded-full border-4 border-surface shadow-xl transform hover:scale-110 transition-transform">
+<span class="material-symbols-outlined text-sm" data-icon="warning" data-weight="fill">warning</span>
+</div>
+<div class="absolute top-10 left-1/2 -translate-x-1/2 bg-surface-container-highest px-3 py-1 rounded-full text-[10px] font-bold whitespace-nowrap border border-error/30 shadow-2xl">🚨 Velachery</div>
+</div>
+</div>
+<!-- Critical: Adyar -->
+<div class="absolute top-[60%] left-[48%] z-10">
+<div class="relative group cursor-pointer">
+<div class="absolute -inset-4 bg-error/20 rounded-full animate-pulse-subtle"></div>
+<div class="relative w-8 h-8 bg-error text-on-error flex items-center justify-center rounded-full border-4 border-surface shadow-xl transform hover:scale-110 transition-transform">
+<span class="material-symbols-outlined text-sm" data-icon="water_damage" data-weight="fill">water_damage</span>
+</div>
+<div class="absolute top-10 left-1/2 -translate-x-1/2 bg-surface-container-highest px-3 py-1 rounded-full text-[10px] font-bold whitespace-nowrap border border-error/30 shadow-2xl">🚨 Adyar</div>
+</div>
+</div>
+<!-- High Alert: T. Nagar -->
+<div class="absolute top-[35%] left-[52%] z-10">
+<div class="relative group cursor-pointer">
+<div class="relative w-7 h-7 bg-tertiary text-on-tertiary flex items-center justify-center rounded-full border-4 border-surface shadow-xl transform hover:scale-110 transition-transform">
+<span class="material-symbols-outlined text-xs" data-icon="priority_high">priority_high</span>
+</div>
+<div class="absolute top-9 left-1/2 -translate-x-1/2 bg-surface-container-highest px-3 py-1 rounded-full text-[10px] font-bold whitespace-nowrap border border-tertiary/30 shadow-2xl">📍 T. Nagar</div>
+</div>
+</div>
+<!-- Safe Zone: Alandur -->
+<div class="absolute top-[70%] left-[58%] z-10">
+<div class="relative group cursor-pointer">
+<div class="relative w-6 h-6 bg-primary text-on-primary flex items-center justify-center rounded-full border-4 border-surface shadow-xl transform hover:scale-110 transition-transform">
+<span class="material-symbols-outlined text-[10px]" data-icon="check_circle" data-weight="fill">check_circle</span>
+</div>
+<div class="absolute top-8 left-1/2 -translate-x-1/2 bg-surface-container-highest px-3 py-1 rounded-full text-[10px] font-bold whitespace-nowrap border border-primary/30 shadow-2xl">🛡️ Alandur</div>
+</div>
+</div>
+</div>
+<!-- Overlays -->
+<!-- Floating Search & Filter -->
+<div class="absolute top-6 left-6 z-20 flex gap-4">
+<div class="glass-panel px-4 py-2 rounded-full border border-outline-variant/15 flex items-center gap-3 w-72 shadow-2xl">
+<span class="material-symbols-outlined text-slate-400" data-icon="search">search</span>
+<input class="bg-transparent border-none focus:ring-0 text-sm w-full text-on-surface placeholder-slate-500" placeholder="Search zone or locality..." type="text"/>
+</div>
+<button class="glass-panel w-10 h-10 rounded-full flex items-center justify-center border border-outline-variant/15 text-slate-400 hover:text-primary transition-all active:scale-90">
+<span class="material-symbols-outlined text-sm" data-icon="filter_list">filter_list</span>
+</button>
+</div>
+<!-- Map Legend -->
+<div class="absolute bottom-6 left-6 z-20 glass-panel p-6 rounded-xl border border-outline-variant/15 shadow-2xl min-w-[200px]">
+<h3 class="font-headline font-bold text-sm mb-4 tracking-tight uppercase">Flood Severity</h3>
+<div class="space-y-4">
+<div class="flex items-center gap-3">
+<div class="w-3 h-3 rounded-full bg-error"></div>
+<span class="text-xs font-medium text-on-surface-variant">Critical (3.5m+)</span>
+</div>
+<div class="flex items-center gap-3">
+<div class="w-3 h-3 rounded-full bg-tertiary"></div>
+<span class="text-xs font-medium text-on-surface-variant">High Alert (1.5m - 3.5m)</span>
+</div>
+<div class="flex items-center gap-3">
+<div class="w-3 h-3 rounded-full bg-primary"></div>
+<span class="text-xs font-medium text-on-surface-variant">Safe Zone (&lt; 0.5m)</span>
+</div>
+</div>
+</div>
+<!-- Zone Details Sidebar Overlay -->
+<div class="absolute top-6 right-6 bottom-6 w-[400px] z-30 flex flex-col gap-6 pointer-events-none">
+<!-- Quick Stats Card -->
+<div class="pointer-events-auto glass-panel p-6 rounded-xl border border-outline-variant/15 shadow-2xl">
+<div class="flex justify-between items-start mb-6">
+<div>
+<span class="text-[10px] font-bold text-error uppercase tracking-[0.2em]">Live Monitoring</span>
+<h2 class="text-3xl font-black font-headline tracking-tighter mt-1">Velachery Zone</h2>
+<p class="text-sm text-slate-400 mt-1">Status: <span class="text-error font-semibold">Critical Hazard 🚨</span></p>
+</div>
+<button class="w-8 h-8 rounded-full bg-surface-container-highest flex items-center justify-center text-slate-400 hover:text-white transition-colors">
+<span class="material-symbols-outlined text-sm" data-icon="close">close</span>
+</button>
+</div>
+<div class="grid grid-cols-2 gap-3 mb-6">
+<div class="bg-surface-container-high p-4 rounded-lg flex flex-col gap-1 relative overflow-hidden">
+<div class="absolute top-0 left-0 w-1 h-full bg-error"></div>
+<span class="text-[10px] text-on-surface-variant font-bold uppercase">Water Depth</span>
+<div class="flex items-baseline gap-1">
+<span class="text-2xl font-black font-headline text-error">4.2</span>
+<span class="text-xs text-slate-500 font-medium">Meters</span>
+</div>
+</div>
+<div class="bg-surface-container-high p-4 rounded-lg flex flex-col gap-1">
+<span class="text-[10px] text-on-surface-variant font-bold uppercase">Rainfall</span>
+<div class="flex items-baseline gap-1">
+<span class="text-2xl font-black font-headline">128</span>
+<span class="text-xs text-slate-500 font-medium">MM/24h</span>
+</div>
+</div>
+</div>
+<div class="bg-surface-container-highest/50 p-4 rounded-xl border border-outline-variant/10 mb-6">
+<div class="flex items-center gap-3 mb-4">
+<span class="material-symbols-outlined text-tertiary" data-icon="groups">groups</span>
+<h4 class="text-xs font-bold uppercase tracking-wider">Active Rescue Teams</h4>
+</div>
+<div class="flex flex-col gap-3">
+<div class="flex items-center justify-between">
+<div class="flex items-center gap-2">
+<div class="w-8 h-8 rounded-full bg-primary/20 flex items-center justify-center border border-primary/30">
+<span class="text-xs">NDRF</span>
+</div>
+<span class="text-xs font-semibold">Team Delta-7</span>
+</div>
+<span class="text-[10px] bg-primary/10 text-primary px-2 py-1 rounded-full">Deployed</span>
+</div>
+<div class="flex items-center justify-between">
+<div class="flex items-center gap-2">
+<div class="w-8 h-8 rounded-full bg-secondary/20 flex items-center justify-center border border-secondary/30">
+<span class="text-xs">FIRE</span>
+</div>
+<span class="text-xs font-semibold">Unit Station 4</span>
+</div>
+<span class="text-[10px] bg-tertiary/10 text-tertiary px-2 py-1 rounded-full">In Transit</span>
+</div>
+</div>
+</div>
+<button class="w-full bg-error text-on-error font-bold py-4 rounded-full flex items-center justify-center gap-3 active:scale-95 transition-transform">
+<span class="material-symbols-outlined" data-icon="emergency_share">emergency_share</span>
+                    Broadcast SOS to Zone
+                </button>
+</div>
+<!-- Sensor Data Visualization -->
+<div class="pointer-events-auto glass-panel p-6 rounded-xl border border-outline-variant/15 shadow-2xl flex-grow overflow-hidden flex flex-col">
+<div class="flex items-center justify-between mb-6">
+<h3 class="text-sm font-bold uppercase tracking-tight">Elevation Trend</h3>
+<div class="flex gap-2">
+<span class="w-2 h-2 rounded-full bg-error"></span>
+<span class="w-2 h-2 rounded-full bg-slate-600"></span>
+</div>
+</div>
+<div class="flex-grow flex items-end gap-2 relative h-32">
+<div class="w-full bg-error/20 h-3/4 rounded-t-lg relative">
+<div class="absolute bottom-0 w-full h-1/2 bg-error/40 rounded-t-lg"></div>
+</div>
+<div class="w-full bg-error/20 h-2/3 rounded-t-lg relative">
+<div class="absolute bottom-0 w-full h-1/3 bg-error/40 rounded-t-lg"></div>
+</div>
+<div class="w-full bg-error/20 h-1/2 rounded-t-lg relative">
+<div class="absolute bottom-0 w-full h-2/3 bg-error/40 rounded-t-lg"></div>
+</div>
+<div class="w-full bg-error/20 h-[90%] rounded-t-lg relative">
+<div class="absolute bottom-0 w-full h-[80%] bg-error/60 rounded-t-lg"></div>
+</div>
+<div class="w-full bg-error/20 h-3/4 rounded-t-lg relative">
+<div class="absolute bottom-0 w-full h-1/2 bg-error/40 rounded-t-lg"></div>
+</div>
+<div class="w-full bg-error/20 h-1/2 rounded-t-lg relative">
+<div class="absolute bottom-0 w-full h-2/3 bg-error/40 rounded-t-lg"></div>
+</div>
+<!-- Legend text for graph -->
+<div class="absolute bottom-[-20px] left-0 w-full flex justify-between text-[8px] text-slate-500 uppercase font-bold px-1">
+<span>06:00</span>
+<span>09:00</span>
+<span>12:00</span>
+<span>15:00</span>
+<span>18:00</span>
+<span>NOW</span>
+</div>
+</div>
+<div class="mt-10 border-t border-outline-variant/10 pt-4">
+<div class="flex items-center gap-4">
+<div class="flex-1">
+<p class="text-[10px] text-slate-500 uppercase font-bold">Prediction</p>
+<p class="text-sm font-semibold text-tertiary">+1.2m Increase Expected</p>
+</div>
+<span class="material-symbols-outlined text-tertiary animate-pulse" data-icon="trending_up">trending_up</span>
+</div>
+</div>
+</div>
+</div>
+<!-- Map Controls -->
+<div class="absolute bottom-6 right-6 z-20 flex flex-col gap-2">
+<button class="glass-panel w-12 h-12 rounded-full flex items-center justify-center border border-outline-variant/15 text-white hover:bg-primary/20 transition-all">
+<span class="material-symbols-outlined" data-icon="add">add</span>
+</button>
+<button class="glass-panel w-12 h-12 rounded-full flex items-center justify-center border border-outline-variant/15 text-white hover:bg-primary/20 transition-all">
+<span class="material-symbols-outlined" data-icon="remove">remove</span>
+</button>
+<button class="glass-panel w-12 h-12 rounded-full flex items-center justify-center border border-outline-variant/15 text-white hover:bg-primary/20 transition-all mt-4">
+<span class="material-symbols-outlined" data-icon="my_location">my_location</span>
+</button>
+<button class="glass-panel w-12 h-12 rounded-full flex items-center justify-center border border-outline-variant/15 text-white hover:bg-primary/20 transition-all">
+<span class="material-symbols-outlined" data-icon="layers">layers</span>
+</button>
+</div>
+</main>
+</body></html>

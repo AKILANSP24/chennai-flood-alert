@@ -1,0 +1,8 @@
+rag-service:
+  build: ./services/rag-service
+  container_name: rag-service
+  ports:
+    - "8100:8100"
+  volumes:
+    - ./data:/data
+  restart: unless-stopped

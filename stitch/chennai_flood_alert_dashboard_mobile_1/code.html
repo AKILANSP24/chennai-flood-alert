@@ -1,0 +1,326 @@
+<!DOCTYPE html>
+
+<html class="dark" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Chennai Flood Alert Dashboard</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+      tailwind.config = {
+        darkMode: "class",
+        theme: {
+          extend: {
+            "colors": {
+                    "on-primary-fixed": "#001f2e",
+                    "secondary-fixed": "#c0d8e8",
+                    "secondary-fixed-dim": "#88b4cc",
+                    "on-primary-container": "#c8eaff",
+                    "tertiary": "#c8a0f0",
+                    "primary": "#7dd3fc",
+                    "on-primary": "#001f2e",
+                    "on-secondary-fixed-variant": "#2a4a5e",
+                    "tertiary-container": "#3d2060",
+                    "inverse-surface": "#e0e8f0",
+                    "surface-bright": "#1a2438",
+                    "on-error-container": "#ffb3b3",
+                    "on-tertiary-fixed-variant": "#4d2a73",
+                    "on-surface": "#e0e8f0",
+                    "inverse-on-surface": "#0a0e1a",
+                    "on-error": "#1a0000",
+                    "error-container": "#3d1414",
+                    "on-background": "#e0e8f0",
+                    "on-tertiary-container": "#e8d0ff",
+                    "outline": "#4a6070",
+                    "tertiary-fixed-dim": "#c8a0f0",
+                    "primary-fixed-dim": "#7dd3fc",
+                    "on-primary-fixed-variant": "#004d73",
+                    "error": "#ff6b6b",
+                    "surface-container": "#141c2e",
+                    "primary-fixed": "#c8eaff",
+                    "primary-container": "#0e4d6e",
+                    "on-secondary-fixed": "#0d1f2b",
+                    "surface-container-low": "#111828",
+                    "surface-variant": "#1a2438",
+                    "secondary": "#88b4cc",
+                    "surface-container-lowest": "#0a0e1a",
+                    "surface-container-high": "#1a2438",
+                    "on-tertiary": "#1a002e",
+                    "surface-dim": "#0f1524",
+                    "on-tertiary-fixed": "#1a002e",
+                    "surface": "#0f1524",
+                    "on-surface-variant": "#a0b4c4",
+                    "secondary-container": "#1a3a4e",
+                    "surface-container-highest": "#202c42",
+                    "surface-tint": "#7dd3fc",
+                    "on-secondary-container": "#c0d8e8",
+                    "inverse-primary": "#0a4c6e",
+                    "background": "#0a0e1a",
+                    "tertiary-fixed": "#e8d0ff",
+                    "outline-variant": "#2a3a48",
+                    "on-secondary": "#001f2e"
+            },
+            "borderRadius": {
+                    "DEFAULT": "0.5rem",
+                    "lg": "1rem",
+                    "xl": "1.5rem",
+                    "full": "9999px"
+            },
+            "fontFamily": {
+                    "headline": ["Inter"],
+                    "body": ["Inter"],
+                    "label": ["Inter"]
+            }
+          },
+        },
+      }
+    </script>
+<style>
+        .glass-card {
+            background: rgba(15, 21, 36, 0.6);
+            backdrop-filter: blur(16px);
+            border: 1px solid rgba(125, 211, 252, 0.1);
+        }
+        .glass-card-elevated {
+            background: rgba(15, 21, 36, 0.75);
+            backdrop-filter: blur(24px);
+            border: 1px solid rgba(125, 211, 252, 0.15);
+        }
+        .glow-subtle {
+            box-shadow: 0 0 30px rgba(125, 211, 252, 0.05);
+        }
+        body {
+            background-color: #0a0e1a;
+            color: #e0e8f0;
+            font-family: 'Inter', sans-serif;
+        }
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+    </style>
+<style>
+    body {
+      min-height: max(884px, 100dvh);
+    }
+  </style>
+  </head>
+<body class="antialiased overflow-x-hidden pb-24">
+<!-- TopAppBar -->
+<header class="fixed top-0 w-full z-50 bg-[#0f1524]/60 backdrop-blur-xl border-b border-sky-400/10 shadow-[0_0_30px_rgba(125,211,252,0.05)] flex items-center justify-between px-4 h-16 w-full">
+<div class="flex items-center gap-2">
+<span class="material-symbols-outlined text-sky-300" data-icon="waves">waves</span>
+<h1 class="text-lg font-black tracking-tighter text-sky-400 font-['Inter']">Chennai Flood Monitor</h1>
+</div>
+<button class="bg-error/20 text-error px-3 py-1.5 rounded-lg text-[10px] font-bold tracking-widest border border-error/30 active:scale-95 duration-200">
+            EMERGENCY
+        </button>
+</header>
+<main class="mt-20 px-4 space-y-6">
+<!-- Live Status Header -->
+<div class="flex items-center justify-between">
+<div class="flex flex-col">
+<span class="text-on-surface-variant text-xs font-medium uppercase tracking-widest">Current Status</span>
+<div class="flex items-center gap-2 mt-1">
+<span class="relative flex h-3 w-3">
+<span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-error opacity-75"></span>
+<span class="relative inline-flex rounded-full h-3 w-3 bg-error"></span>
+</span>
+<h2 class="text-xl font-semibold text-on-surface">Chennai Flood Alert System</h2>
+</div>
+</div>
+<div class="text-right">
+<span class="text-xs text-on-surface-variant block">Updated</span>
+<span class="text-xs font-bold text-sky-300">2 MIN AGO</span>
+</div>
+</div>
+<!-- Stat Bento Grid -->
+<div class="grid grid-cols-2 gap-3">
+<div class="glass-card p-4 rounded-xl glow-subtle">
+<span class="material-symbols-outlined text-sky-300 mb-2" data-icon="warning">warning</span>
+<div class="text-2xl font-bold text-on-surface">1,284</div>
+<div class="text-[10px] text-on-surface-variant font-medium uppercase tracking-tight">Total Alerts</div>
+</div>
+<div class="glass-card p-4 rounded-xl glow-subtle border-error/20">
+<span class="material-symbols-outlined text-error mb-2" data-icon="campaign" style="font-variation-settings: 'FILL' 1;">campaign</span>
+<div class="text-2xl font-bold text-error">42</div>
+<div class="text-[10px] text-on-surface-variant font-medium uppercase tracking-tight">Red Alerts</div>
+</div>
+<div class="glass-card p-4 rounded-xl glow-subtle">
+<span class="material-symbols-outlined text-tertiary mb-2" data-icon="map">map</span>
+<div class="text-2xl font-bold text-on-surface">15</div>
+<div class="text-[10px] text-on-surface-variant font-medium uppercase tracking-tight">Zones Affected</div>
+</div>
+<div class="glass-card p-4 rounded-xl glow-subtle">
+<span class="material-symbols-outlined text-sky-300 mb-2" data-icon="person_pin">person_pin</span>
+<div class="text-2xl font-bold text-on-surface">342.8k</div>
+<div class="text-[10px] text-on-surface-variant font-medium uppercase tracking-tight">Citizens</div>
+</div>
+</div>
+<!-- Alerts by Zone Chart -->
+<section class="glass-card p-5 rounded-xl glow-subtle">
+<div class="flex items-center justify-between mb-6">
+<h3 class="text-sm font-semibold text-on-surface">Alerts by Chennai Zone</h3>
+<span class="material-symbols-outlined text-on-surface-variant text-sm" data-icon="info">info</span>
+</div>
+<div class="flex items-end justify-between h-40 gap-3 px-1">
+<!-- Bar 1: Velachery -->
+<div class="flex-1 flex flex-col items-center gap-2 h-full justify-end">
+<div class="w-full bg-primary/20 border-t-2 border-primary rounded-t-sm" style="height: 85%;">
+<div class="w-full h-full bg-gradient-to-t from-primary/10 to-primary/40"></div>
+</div>
+<span class="text-[9px] font-bold text-on-surface-variant">VEL</span>
+</div>
+<!-- Bar 2: Adyar -->
+<div class="flex-1 flex flex-col items-center gap-2 h-full justify-end">
+<div class="w-full bg-primary/20 border-t-2 border-primary rounded-t-sm" style="height: 45%;">
+<div class="w-full h-full bg-gradient-to-t from-primary/10 to-primary/40"></div>
+</div>
+<span class="text-[9px] font-bold text-on-surface-variant">ADY</span>
+</div>
+<!-- Bar 3: Tambaram -->
+<div class="flex-1 flex flex-col items-center gap-2 h-full justify-end">
+<div class="w-full bg-primary/20 border-t-2 border-primary rounded-t-sm" style="height: 65%;">
+<div class="w-full h-full bg-gradient-to-t from-primary/10 to-primary/40"></div>
+</div>
+<span class="text-[9px] font-bold text-on-surface-variant">TAM</span>
+</div>
+<!-- Bar 4: Saidapet -->
+<div class="flex-1 flex flex-col items-center gap-2 h-full justify-end">
+<div class="w-full bg-primary/20 border-t-2 border-primary rounded-t-sm" style="height: 75%;">
+<div class="w-full h-full bg-gradient-to-t from-primary/10 to-primary/40"></div>
+</div>
+<span class="text-[9px] font-bold text-on-surface-variant">SAI</span>
+</div>
+<!-- Bar 5: Porur -->
+<div class="flex-1 flex flex-col items-center gap-2 h-full justify-end">
+<div class="w-full bg-primary/20 border-t-2 border-primary rounded-t-sm" style="height: 35%;">
+<div class="w-full h-full bg-gradient-to-t from-primary/10 to-primary/40"></div>
+</div>
+<span class="text-[9px] font-bold text-on-surface-variant">POR</span>
+</div>
+</div>
+</section>
+<!-- Alert Feed -->
+<section class="space-y-4">
+<div class="flex items-center justify-between">
+<h3 class="text-sm font-semibold text-on-surface flex items-center gap-2">
+                    Recent Alerts
+                    <span class="bg-primary/10 text-primary text-[10px] px-2 py-0.5 rounded-full border border-primary/20">LIVE</span>
+</h3>
+<button class="text-xs text-sky-300 font-medium active:scale-95 transition-transform">View All</button>
+</div>
+<!-- Feed Item 1: Emergency -->
+<div class="glass-card-elevated p-4 rounded-xl border-l-4 border-l-error">
+<div class="flex justify-between items-start mb-3">
+<div>
+<h4 class="text-base font-bold text-on-surface">Velachery Main Road</h4>
+<span class="text-[10px] text-on-surface-variant font-medium">10 mins ago • Sensor #042</span>
+</div>
+<span class="bg-error/20 text-error text-[10px] font-black px-2 py-1 rounded">EMERGENCY</span>
+</div>
+<div class="grid grid-cols-2 gap-4">
+<div class="flex items-center gap-2">
+<span class="material-symbols-outlined text-primary text-sm" data-icon="water_drop">water_drop</span>
+<div class="text-xs">
+<p class="text-on-surface-variant text-[9px] uppercase">Water Depth</p>
+<p class="font-bold text-on-surface">4.2 Feet</p>
+</div>
+</div>
+<div class="flex items-center gap-2">
+<span class="material-symbols-outlined text-primary text-sm" data-icon="home_health">home_health</span>
+<div class="text-xs">
+<p class="text-on-surface-variant text-[9px] uppercase">Nearest Shelter</p>
+<p class="font-bold text-on-surface">St. Mary's School</p>
+</div>
+</div>
+</div>
+<button class="mt-4 w-full py-2 bg-error text-on-error rounded-lg text-xs font-bold active:scale-95 transition-all">Get Evacuation Route</button>
+</div>
+<!-- Feed Item 2: High -->
+<div class="glass-card p-4 rounded-xl border-l-4 border-l-tertiary">
+<div class="flex justify-between items-start mb-3">
+<div>
+<h4 class="text-base font-bold text-on-surface">Saidapet Bridge Area</h4>
+<span class="text-[10px] text-on-surface-variant font-medium">28 mins ago • Sensor #019</span>
+</div>
+<span class="bg-tertiary/20 text-tertiary text-[10px] font-black px-2 py-1 rounded">HIGH</span>
+</div>
+<div class="grid grid-cols-2 gap-4">
+<div class="flex items-center gap-2">
+<span class="material-symbols-outlined text-primary text-sm" data-icon="water_drop">water_drop</span>
+<div class="text-xs">
+<p class="text-on-surface-variant text-[9px] uppercase">Water Depth</p>
+<p class="font-bold text-on-surface">2.8 Feet</p>
+</div>
+</div>
+<div class="flex items-center gap-2">
+<span class="material-symbols-outlined text-primary text-sm" data-icon="home_health">home_health</span>
+<div class="text-xs">
+<p class="text-on-surface-variant text-[9px] uppercase">Nearest Shelter</p>
+<p class="font-bold text-on-surface">MCC Grounds</p>
+</div>
+</div>
+</div>
+</div>
+<!-- Feed Item 3: Moderate -->
+<div class="glass-card p-4 rounded-xl border-l-4 border-l-sky-400">
+<div class="flex justify-between items-start mb-3">
+<div>
+<h4 class="text-base font-bold text-on-surface">Adyar River Canal</h4>
+<span class="text-[10px] text-on-surface-variant font-medium">45 mins ago • Sensor #088</span>
+</div>
+<span class="bg-sky-400/20 text-sky-400 text-[10px] font-black px-2 py-1 rounded">MODERATE</span>
+</div>
+<div class="grid grid-cols-2 gap-4">
+<div class="flex items-center gap-2">
+<span class="material-symbols-outlined text-primary text-sm" data-icon="water_drop">water_drop</span>
+<div class="text-xs">
+<p class="text-on-surface-variant text-[9px] uppercase">Water Depth</p>
+<p class="font-bold text-on-surface">1.2 Feet</p>
+</div>
+</div>
+<div class="flex items-center gap-2">
+<span class="material-symbols-outlined text-primary text-sm" data-icon="home_health">home_health</span>
+<div class="text-xs">
+<p class="text-on-surface-variant text-[9px] uppercase">Nearest Shelter</p>
+<p class="font-bold text-on-surface">Adyar Library</p>
+</div>
+</div>
+</div>
+</div>
+</section>
+<!-- Map Snippet -->
+<section class="glass-card overflow-hidden rounded-xl h-48 relative glow-subtle">
+<div class="absolute inset-0 bg-cover bg-center" data-alt="Dark stylized tactical map of Chennai city with glowing flood risk zones highlighted in blue and red neon colors" data-location="Chennai" style="background-image: url('https://lh3.googleusercontent.com/aida-public/AB6AXuB5zeqVIEsS8U9HwOZ6olyycQKDbLWSvFciHdq3qOYUlBR8yp2qr29Ypdc6xvqh6YBKRVr4o_ifQbn9dila8Z3bmIMcDgqsZ34J1YSvVyqvkLYxCpgwJWbgOFJJ-eZ4ykCk76iYKs3G5zVRPThcLxfeyjEe4HlzhbGDpWSpXuW3TgSGTfQt9jEBzDpAMO8BzwvEtzqE24i1dKZjquqRCCcKxQRl3hJAk0J9biCOp8jxnnTqBin1fWnPImA6bc5xB946wwcxx4SHKc1N')"></div>
+<div class="absolute inset-0 bg-gradient-to-t from-[#0f1524] to-transparent"></div>
+<div class="absolute bottom-4 left-4 right-4 flex items-center justify-between">
+<div class="flex flex-col">
+<span class="text-xs font-bold text-on-surface">Live Heatmap</span>
+<span class="text-[10px] text-on-surface-variant">4 Active Clusters Detected</span>
+</div>
+<button class="bg-sky-400/20 backdrop-blur-md border border-sky-400/30 text-sky-300 px-4 py-2 rounded-full text-xs font-bold active:scale-95 transition-all">Expand Map</button>
+</div>
+</section>
+</main>
+<!-- BottomNavBar -->
+<nav class="fixed bottom-0 left-0 w-full flex justify-around items-center px-2 py-3 bg-[#0f1524]/75 backdrop-blur-2xl border-t border-sky-400/15 shadow-[0_-4px_24px_rgba(0,0,0,0.4)] z-50 rounded-t-xl">
+<a class="flex flex-col items-center justify-center text-sky-300 bg-sky-400/10 rounded-xl px-3 py-1 active:scale-90 transition-transform" href="#">
+<span class="material-symbols-outlined" data-icon="sensors">sensors</span>
+<span class="font-['Inter'] text-[10px] font-medium">Live Feed</span>
+</a>
+<a class="flex flex-col items-center justify-center text-slate-500 hover:text-sky-200 active:scale-90 transition-transform" href="#">
+<span class="material-symbols-outlined" data-icon="analytics">analytics</span>
+<span class="font-['Inter'] text-[10px] font-medium">Metrics</span>
+</a>
+<a class="flex flex-col items-center justify-center text-slate-500 hover:text-sky-200 active:scale-90 transition-transform" href="#">
+<span class="material-symbols-outlined" data-icon="groups">groups</span>
+<span class="font-['Inter'] text-[10px] font-medium">Teams</span>
+</a>
+<a class="flex flex-col items-center justify-center text-slate-500 hover:text-sky-200 active:scale-90 transition-transform" href="#">
+<span class="material-symbols-outlined" data-icon="account_circle">account_circle</span>
+<span class="font-['Inter'] text-[10px] font-medium">Portal</span>
+</a>
+</nav>
+</body></html>

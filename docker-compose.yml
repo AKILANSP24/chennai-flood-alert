@@ -4,6 +4,8 @@ services:
     container_name: kafka
     ports:
       - "9092:9092"
+    volumes:
+      - kafka_data:/var/lib/kafka/data
     environment:
       KAFKA_NODE_ID: 1
       KAFKA_PROCESS_ROLES: broker,controller
@@ -12,11 +14,11 @@ services:
       KAFKA_CONTROLLER_LISTENER_NAMES: CONTROLLER
       KAFKA_LISTENER_SECURITY_PROTOCOL_MAP: CONTROLLER:PLAINTEXT,PLAINTEXT:PLAINTEXT
       KAFKA_CONTROLLER_QUORUM_VOTERS: 1@localhost:9093
-      # Note: simplified KRaft mode config for development purposes
       KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR: 1
       KAFKA_TRANSACTION_STATE_LOG_REPLICATION_FACTOR: 1
       KAFKA_TRANSACTION_STATE_LOG_MIN_ISR: 1
       KAFKA_GROUP_INITIAL_REBALANCE_DELAY_MS: 0
+      KAFKA_AUTO_CREATE_TOPICS_ENABLE: "true"
 
   ollama:
     image: ollama/ollama
@@ -31,6 +33,15 @@ services:
     container_name: redis
     ports:
       - "6379:6379"
+
+  ragservice:
+    build: ./services/rag-service
+    container_name: ragservice
+    ports:
+      - "8100:8100"
+    volumes:
+      - ./data:/data
+    restart: unless-stopped
 
   telegram-bot:
     build: ./services/telegram-bot
@@ -72,17 +83,26 @@ services:
     depends_on:
       - kafka
       - redis
+      - ragservice
     env_file: .env
     volumes:
       - ./data:/data
 
   dashboard:
-    build: ./services/dashboard
+    image: python:3.11-slim
     container_name: dashboard
+    volumes:
+      - ./services/dashboard:/app
+      - ./data:/data
+    working_dir: /app
+    command: python dashboard_api.py
     ports:
       - "8081:8081"
+    environment:
+      - REDIS_HOST=redis
+      - ALERTS_CSV=/data/alerts_log.csv
     depends_on:
-      - kafka
+      - redis
 
   r-analysis:
     image: rocker/tidyverse:4.3
@@ -90,11 +110,11 @@ services:
     volumes:
       - ./data:/data
       - ./r-analysis:/r-analysis
-    command: >
-      Rscript -e "install.packages(c('leaflet','htmlwidgets'), repos='https://cran.r-project.org')" && Rscript /r-analysis/flood_report.R
+    command: Rscript /r-analysis/flood_report.R
     depends_on:
       - decision-engine
     restart: "no"
 
 volumes:
   ollama_data:
+  kafka_data:

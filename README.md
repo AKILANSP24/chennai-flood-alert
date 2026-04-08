@@ -9,6 +9,23 @@
 
 ---
 
+## Project Title
+
+**Real-Time Urban Flood Detection and Citizen Alert System for Chennai**
+
+## Team
+
+| Name | Institution |
+|---|---|
+| Arone Benedict L | VIT Chennai |
+| Anieruth S | VIT Chennai |
+| Akilan S P | VIT Chennai |
+
+*Integrated M.Tech — Computer Science Engineering with Business Analytics*
+*VIT Chennai*
+
+---
+
 ## What It Does
 
 Citizens report floods via Telegram in English or Tanglish. The system automatically:
@@ -50,7 +67,7 @@ Citizen (Telegram) → Kafka → NLP Service (Llama 3.2) → Decision Engine (Re
 ## Prerequisites
 
 - Docker Desktop (Windows/Mac) or Docker Engine (Linux)
-- Python 3.11+ (for simulation script)
+- Python 3.11+
 - A Telegram bot token (from [@BotFather](https://t.me/BotFather))
 - OpenWeatherMap free API key
 
@@ -61,7 +78,7 @@ Citizen (Telegram) → Kafka → NLP Service (Llama 3.2) → Decision Engine (Re
 **1. Clone the repository:**
 
 ```bash
-git clone https://github.com/YOUR_USERNAME/chennai-flood-alert.git
+git clone https://github.com/AKILANSP24/chennai-flood-alert.git
 cd chennai-flood-alert
 ```
 
@@ -125,10 +142,6 @@ http://localhost:8081
 
 ## Running a Simulation
 
-```bash
-pip install requests
-```
-
 ```powershell
 # Windows PowerShell
 $env:TELEGRAM_BOT_TOKEN="your_token"
@@ -141,11 +154,7 @@ python simulate.py
 TELEGRAM_BOT_TOKEN=your_token SIMULATE_CHAT_ID=your_id python simulate.py
 ```
 
-The simulation sends 4 scenarios automatically:
-- English flood report with depth
-- Tanglish flood report
-- Density trigger (3 Adyar reports)
-- Saidapet emergency
+The simulation sends 4 flood scenarios automatically — English report, Tanglish report, density trigger, and emergency alert.
 
 ---
 
@@ -164,82 +173,19 @@ The simulation sends 4 scenarios automatically:
 ## Alert Trigger Rules
 
 - **Rule 1:** Water depth > 50cm → immediate RED alert
-- **Rule 2:** 3+ critical/high reports from same zone within 10 minutes → ORANGE/RED alert
+- **Rule 2:** 3+ reports from same zone within 10 minutes → ORANGE/RED alert
 
 ---
 
 ## Dashboard Pages
 
-| Page | URL path | Description |
-|---|---|---|
-| Live Feed | `/#live` | Real-time alert feed + pipeline status |
-| Risk Map | `/#map` | Chennai zone map with severity markers |
-| Analytics | `/#analytics` | Data table, zone distribution, R charts |
-| Relief Hubs | `/#shelters` | All 11 shelter zones with NDRF units |
-| Register | `/#register` | Bot commands + quick report form |
-
----
-
-## Deploy to Vercel / Netlify
-
-The dashboard (`services/dashboard/dashboard.html`) is a single HTML file with no build step.
-
-**Vercel:**
-
-```bash
-npm i -g vercel
-vercel --prod
-```
-
-Point it to `services/dashboard/` as the root. Set environment variable `VITE_API_URL` to your deployed backend URL.
-
-**Netlify:**
-
-Drag and drop the `services/dashboard/` folder to [app.netlify.com](https://app.netlify.com).
-
-> Note: For a live dashboard connected to real data, deploy the full Docker stack on a VPS (DigitalOcean, Railway, or Render) and update `API_BASE` in the dashboard HTML to point to your deployed API URL.
-
----
-
-## RAG Knowledge Base
-
-The system covers 11 Chennai flood zones:
-
-Velachery · Tambaram · Adyar · Saidapet · Mudichur · Porur · Perambur · T Nagar · Anna Nagar · Chrompet · Neelankari
-
-Each zone has a designated shelter, NDRF unit, historical flood depth, and evacuation route.
-
----
-
-## Adding Maps
-
-The current dashboard uses a static satellite image. To add interactive maps:
-
-**Option A — Leaflet.js (free):**
-
-```html
-<link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css"/>
-<script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
-<div id="map" style="height:400px;"></div>
-<script>
-  const map = L.map('map').setView([13.0827, 80.2707], 12);
-  L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png').addTo(map);
-  // Add alert markers from your API
-  fetch('/api/alerts').then(r=>r.json()).then(data=>{
-    data.alerts.forEach(a=>{
-      const coords = ZONE_COORDS[a.zone.toLowerCase()];
-      if(coords) L.circleMarker(coords, {
-        color: a.severity==='critical' ? '#ff716c' : '#ff8439',
-        radius: 12
-      }).addTo(map).bindPopup(`${a.zone}: ${a.depth_cm}cm`);
-    });
-  });
-</script>
-```
-
-**Option B — Google Maps (requires API key):**
-
-Get a free Google Maps API key at [console.cloud.google.com](https://console.cloud.google.com). Add it to `.env` as `GOOGLE_MAPS_API_KEY`.
+| Page | Description |
+|---|---|
+| Live Feed | Real-time alert feed + pipeline status |
+| Risk Map | Chennai zone map with severity markers |
+| Analytics | Data table, zone distribution, R charts, PDF report download |
+| Relief Hubs | All 11 shelter zones with NDRF units |
+| Register | Bot commands + quick report form |
 
 ---
 
@@ -256,7 +202,7 @@ Get a free Google Maps API key at [console.cloud.google.com](https://console.clo
 | SMS Fallback | Fast2SMS Quick Route |
 | Analytics | R (ggplot2, dplyr, lubridate) |
 | Dashboard | Vanilla HTML/CSS/JS |
-| Containerization | Docker Compose |
+| Containerisation | Docker Compose |
 
 ---
 
@@ -272,11 +218,10 @@ chennai-flood-alert/
 │   ├── weather-ingestor/    # OpenWeatherMap polling
 │   ├── reservoir-scraper/   # Reservoir level scraping
 │   └── dashboard/           # Live ops dashboard
-├── r-analysis/              # R analytics + chart generation
+├── r-analysis/              # R analytics + PDF report generation
 ├── data/                    # CSV logs + generated reports
 ├── docker-compose.yml
 ├── simulate.py              # Demo simulation script
-├── DEMO_GUIDE.md            # Faculty demo instructions
 └── README.md
 ```
 
@@ -289,23 +234,14 @@ chennai-flood-alert/
 | `TELEGRAM_BOT_TOKEN` | From @BotFather |
 | `TELEGRAM_CHANNEL_ID` | Your alert channel ID |
 | `OPENWEATHERMAP_API_KEY` | Free tier works |
-| `FAST2SMS_API_KEY` | Requires ₹100 recharge for API |
+| `FAST2SMS_API_KEY` | Requires ₹100 recharge for API route |
 | `ALERT_PHONE_NUMBERS` | Comma-separated 10-digit numbers |
 | `OLLAMA_MODEL` | Default: llama3.2:3b |
-| `DENSITY_THRESHOLD` | Reports to trigger density alert (default: 3) |
 | `DEPTH_THRESHOLD_CM` | Depth to trigger immediate alert (default: 50) |
 | `WINDOW_MINUTES` | Sliding window duration (default: 10) |
 
 ---
 
-## Built By
-
-**Akilan S P** (22MIA1191)
-B.Tech CSE with Business Analytics Specialization
-VIT Chennai
-
----
-
 ## License
 
-VIT-chennai
+MIT

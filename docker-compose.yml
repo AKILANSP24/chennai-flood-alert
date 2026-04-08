@@ -89,15 +89,14 @@ services:
       - ./data:/data
 
   dashboard:
-    image: python:3.11-slim
+    build: ./services/dashboard
     container_name: dashboard
     volumes:
-      - ./services/dashboard:/app
       - ./data:/data
-    working_dir: /app
-    command: python dashboard_api.py
+      - ./r-analysis:/r-analysis
     ports:
       - "8081:8081"
+    env_file: .env
     environment:
       - REDIS_HOST=redis
       - ALERTS_CSV=/data/alerts_log.csv
@@ -110,7 +109,7 @@ services:
     volumes:
       - ./data:/data
       - ./r-analysis:/r-analysis
-    command: Rscript /r-analysis/flood_report.R
+    command: Rscript -e "install.packages(c('scales','gridExtra'),repos='https://cran.r-project.org',quiet=TRUE); library(tidyr); source('/r-analysis/flood_report.R')"
     depends_on:
       - decision-engine
     restart: "no"
